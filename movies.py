@@ -27,16 +27,17 @@ def addMovie():
         connection.close()
 
 @app.route('/movies')
-def movieList():
-    connection.sqlite3.connect('movies.db')
+def movies():
+    connection = sqlite3.connect('movies.db')
     cursor = connection.cursor()
 
     try:
         cursor.execute('SELECT * FROM movies')
-        listOfMovies = jsonify(cursor.fetchall())
+        listOfMovies = cursor.fetchall()
+        message = 'List found!'
     except:
-        cursor.rollback()
-        listOfMovies = 'Sorry, nothing was found'
+        connection.rollback()
+        message = 'Sorry, nothing was found'
     finally:
-        return listOfMovies
+        return jsonify(listOfMovies)
         connection.close()
